@@ -1,36 +1,123 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# NoviceAuth
+
+A modern authentication application built with Next.js, NextAuth, MongoDB, and Tailwind CSS.
+
+## Features
+
+- **User Authentication**: Login and registration with email/password or Google
+- **Email Verification**: OTP-based email verification for new accounts
+- **Password Reset**: Secure password reset flow with email notifications
+- **Google OAuth**: Seamless Google authentication
+- **Form Validation**: Using Zod for robust form validation
+- **Responsive Design**: Clean and modern UI with Tailwind CSS
+- **Protected Routes**: Middleware-based route protection
+
+## Tech Stack
+
+- **Frontend & Backend**: Next.js
+- **Authentication**: NextAuth.js (v4.24.11)
+- **Database**: MongoDB Atlas
+- **Form Validation**: Zod
+- **Styling**: Tailwind CSS
+- **Email Service**: Nodemailer
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Node.js (v18 or higher)
+- MongoDB Atlas account
+- Google OAuth credentials (for Google authentication)
+
+### Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
+
+```
+MONGODB_URI=your_mongodb_connection_string
+SMTP_EMAIL=your_email_for_sending_emails
+SMTP_PASSWORD=your_email_app_password
+NEXTAUTH_SECRET=your_nextauth_secret
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+NEXTAUTH_URL=http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Authentication Flow
 
-## Learn More
+### Registration
 
-To learn more about Next.js, take a look at the following resources:
+1. User enters email and password
+2. System creates a new user with unverified status
+3. OTP is sent to the user's email
+4. User verifies email by entering the OTP
+5. User can now log in
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Login
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. User enters email and password
+2. System verifies credentials and email verification status
+3. User is redirected to dashboard upon successful login
 
-## Deploy on Vercel
+### Google Authentication
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. User clicks "Continue with Google"
+2. Google OAuth flow is initiated
+3. For new users, a new account is created with `isGoogleAuth` set to true
+4. For existing users, they are logged in directly
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Password Reset
+
+1. User requests password reset
+2. System sends a reset link to the user's email
+3. User clicks the link and enters a new password
+4. Password is updated and user can log in with the new credentials
+
+## Project Structure
+
+```
+novice-auth/
+├── src/
+│   ├── app/
+│   │   ├── api/
+│   │   │   └── auth/
+│   │   │       ├── [...nextauth]/
+│   │   │       ├── register/
+│   │   │       ├── verify-otp/
+│   │   │       ├── forgot-password/
+│   │   │       └── reset-password/
+│   │   ├── auth/
+│   │   ├── dashboard/
+│   │   ├── layout.js
+│   │   └── page.js
+│   ├── components/
+│   │   └── NextAuthProvider.js
+│   ├── lib/
+│   │   └── dbConnect.js
+│   ├── models/
+│   │   └── User.js
+│   ├── utils/
+│   │   ├── nodemailerUtility.js
+│   │   └── sendVerificationEmail.js
+│   └── middleware.js
+├── .env
+├── package.json
+└── README.md
+```
+
+## License
+
+MIT
